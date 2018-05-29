@@ -180,7 +180,30 @@
     <p class="setup-similar-label">Петр Петров</p>
   </div>
 </template>
+<script>
+  var fireballSize = 22;
+  var wizardSpeed = 3;
+  var wizardWidth = 70;
 
+  var getFireballSpeed = function (left) {
+    return left ? 5 : 2;
+  }
+
+  var  getWizardHeight = function (wizardWidth) {
+    return 1.337 * wizardWidth;
+  }
+
+  var getWizardX = function (width) {
+    return (width / 2) - (wizardWidth / 2);
+  }
+
+  var getWizardY = function (height) {
+    return height - (height * 2/3);
+    /* Здесь немного не понятно, маг должен находиться на выстоте 2/3 от земли
+       относительно своей нижней точки (т.е где ноги) или же относительно своего верхнего левого угла?
+    */
+  }
+</script>
 <script src="js/game.js"></script>
 
 </body>
