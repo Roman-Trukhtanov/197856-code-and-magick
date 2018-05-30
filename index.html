@@ -194,14 +194,11 @@
   }
 
   var getWizardX = function (width) {
-    return (width / 2) - (wizardWidth / 2);
+    return (width - wizardWidth) / 2;
   }
 
   var getWizardY = function (height) {
-    return height - (height * 2/3);
-    /* Здесь немного не понятно, маг должен находиться на выстоте 2/3 от земли
-       относительно своей нижней точки (т.е где ноги) или же относительно своего верхнего левого угла?
-    */
+    return height * 1/3;
   }
 </script>
 <script src="js/game.js"></script>
