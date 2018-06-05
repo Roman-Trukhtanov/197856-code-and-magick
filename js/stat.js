@@ -45,6 +45,35 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+/* Функция для сортировки времени мрохождения всех игроков (кроме текущего, т.е игрока с именем "Вы") */
+var sortingPlayersTimes = function (playersNames, playersTimes) {
+  /* Объявляет пустой массив, который будет хранить время прохождения игры всех игроков (кроме текущего, т.е игрока с именем "Вы") */
+  var playersTimesDataBase = [];
+
+  /* Добавляет данные в новый массив */
+  for (var k = 0; k < playersTimes.length; k++) {
+    if (playersNames[k] !== 'Вы') {
+      playersTimesDataBase.push(playersTimes[k]);
+    }
+  }
+
+  /* Сортирует новый массив с временем каждого игрока (по возрастанию) */
+  for (var i = 0; i < playersTimesDataBase.length - 1; i++) {
+    var maxElement = playersTimesDataBase[i];
+
+    for (var j = i + 1; j < playersTimesDataBase.length; j++) {
+      if (playersTimesDataBase[j] > maxElement) {
+        maxElement = playersTimesDataBase[j];
+        var swap = playersTimesDataBase[i];
+        playersTimesDataBase[i] = maxElement;
+        playersTimesDataBase[j] = swap;
+      }
+    }
+  }
+
+  return playersTimesDataBase;
+};
+
 window.renderStatistics = function (ctx, names, times) {
   /* Рисует подложку от статистики */
   renderCloud(ctx, POSITION_X + GAP, POSITION_Y + GAP, CLOUD_SHADOW_COLOR);
@@ -73,7 +102,9 @@ window.renderStatistics = function (ctx, names, times) {
 
     /* Объявляет дополнительные переменные для последуюего вычисления цвета для раскраски блоков на гистограмме */
     var transparencyCoefficient = 1 / (names.length - 1);
-    var playerIndexKey = 0;
+
+    /* Вызывает сортировку времени прохождения всех игроков и записывает в переменную*/
+    var sortedTimes = sortingPlayersTimes(names, times);
 
     /* Рисует гистогнамму */
     for (var i = 0; i < names.length; i++) {
@@ -82,8 +113,7 @@ window.renderStatistics = function (ctx, names, times) {
       if (names[i] === 'Вы') {
         ctx.fillStyle = CURRENT_PLAYER_BAR_COLOR;
       } else {
-        ctx.fillStyle = 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * playerIndexKey).toFixed(2) + ')';
-        playerIndexKey++;
+        ctx.fillStyle = 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * sortedTimes.indexOf(times[i])).toFixed(2) + ')';
       }
 
       var currentBarHeight = MAX_BAR_HEIGHT * times[i] / maxTime;
