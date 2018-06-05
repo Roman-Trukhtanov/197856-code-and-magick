@@ -1,10 +1,13 @@
 'use strict';
 
 var TEXT_SIZE = 16;
-var TEXT_HEIGHT = TEXT_SIZE + 4;
+var TEXT_HEIGHT = TEXT_SIZE * 1.2;
 var TEXT_COLOR = '#000000';
+var TEXT_ERROR_COLOR = '#ff0000';
 var TEXT_FONT_FAMILY = 'PT Mono';
 
+var CLOUD_COLOR = '#ffffff';
+var CLOUD_SHADOW_COLOR = 'rgba(0, 0, 0, 0.7)';
 var CLOUD_WIDTH = 420;
 var CLOUD_HEIGHT = 270;
 var POSITION_X = 100;
@@ -18,6 +21,7 @@ var BAR_GAP = 50;
 
 var BAR_WIDTH = 40;
 var MAX_BAR_HEIGHT = 150;
+var CURRENT_PLAYER_BAR_COLOR = '#ff0000';
 
 var startPositionX = POSITION_X + BAR_WIDTH;
 var startPositionY = CLOUD_HEIGHT - OFFSET;
@@ -30,10 +34,6 @@ var renderCloud = function (ctx, x, y, color) {
 
 /* функция для нахожденя максимальново значения в массиве */
 var getMaxElement = function (arr) {
-  if (arr.length === 0) {
-    return false;
-  }
-
   var maxElement = arr[0];
 
   for (var i = 0; i < arr.length; i++) {
@@ -47,8 +47,8 @@ var getMaxElement = function (arr) {
 
 window.renderStatistics = function (ctx, names, times) {
   /* Рисует подложку от статистики */
-  renderCloud(ctx, POSITION_X + GAP, POSITION_Y + GAP, 'rgba(0, 0, 0, 0.7)');
-  renderCloud(ctx, POSITION_X, POSITION_Y, '#ffffff');
+  renderCloud(ctx, POSITION_X + GAP, POSITION_Y + GAP, CLOUD_SHADOW_COLOR);
+  renderCloud(ctx, POSITION_X, POSITION_Y, CLOUD_COLOR);
 
   /* Задает размеры текста */
   ctx.textBaseline = 'top';
@@ -62,28 +62,28 @@ window.renderStatistics = function (ctx, names, times) {
   /* Изменяет базовую линию текста, для удобства подсчетов*/
   ctx.textBaseline = 'bottom';
 
-  /* Находит максимальное число в массиве */
-  var maxTime = getMaxElement(times);
-
-  if (!maxTime) {
+  if (!times) {
     ctx.font = TEXT_SIZE.toString() + 'px' + ' ' + 'Times New Roman';
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = TEXT_ERROR_COLOR;
     ctx.fillText('Что-то пошло не так!!!', POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2);
     ctx.fillText('Попробуйте пройти игру заного', POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2 + TEXT_HEIGHT);
   } else {
+    /* Находит максимальное число в массиве */
+    var maxTime = getMaxElement(times);
+
     /* Объявляет дополнительные переменные для последуюего вычисления цвета для раскраски блоков на гистограмме */
     var transparencyCoefficient = 1 / (names.length - 1);
-    var playerIndex = 0;
+    var playerIndexKey = 0;
 
     /* Рисует гистогнамму */
     for (var i = 0; i < names.length; i++) {
       ctx.fillText(names[i], startPositionX + (BAR_WIDTH + BAR_GAP) * i, startPositionY);
 
       if (names[i] === 'Вы') {
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = CURRENT_PLAYER_BAR_COLOR;
       } else {
-        ctx.fillStyle = 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * playerIndex) + ')';
-        playerIndex++;
+        ctx.fillStyle = 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * playerIndexKey).toFixed(2) + ')';
+        playerIndexKey++;
       }
 
       var currentBarHeight = MAX_BAR_HEIGHT * times[i] / maxTime;
