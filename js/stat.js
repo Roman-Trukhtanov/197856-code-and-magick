@@ -94,10 +94,7 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillStyle = TEXT_COLOR;
   ctx.font = TEXT_SIZE.toString() + 'px' + ' ' + TEXT_FONT_FAMILY;
 
-  /* Изменяет базовую линию текста, для удобства подсчетов*/
-  ctx.textBaseline = 'bottom';
-
-  if (!times) {
+  if (times) {
     ctx.fillStyle = TEXT_ERROR_COLOR;
     ctx.fillText('Ура, поздравляем!', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2);
     ctx.fillText('Вы успешно закончили игру.', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2 + TEXT_HEIGHT);
@@ -105,6 +102,10 @@ window.renderStatistics = function (ctx, names, times) {
     /* Выводит победный текст */
     ctx.fillText('Ура вы победили!', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_POSITION_Y + PADDING_TOP + OFFSET);
     ctx.fillText('Список результатов:', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_POSITION_Y + PADDING_TOP + OFFSET + TEXT_HEIGHT);
+
+
+    /* Изменяет базовую линию текста, для удобства подсчетов */
+    ctx.textBaseline = 'bottom';
 
     /* Находит максимальное число в массиве */
     var maxTime = getMaxElement(times);
