@@ -44,6 +44,17 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+/* функция возвращающая объект-словарь со значениями позиций игроков по времени */
+var createPlayersTimesMap = function (playersTimes) {
+  var objectMap = {};
+
+  for (var i = 0; i < playersTimes.length; i++) {
+    objectMap[playersTimes[i]] = i;
+  }
+
+  return objectMap;
+};
+
 /* Функция для сортировки времени мрохождения всех игроков (кроме текущего, т.е игрока с именем "Вы") */
 var sortPlayersTimes = function (playersNames, times) {
   /* Записывает отфильтрованный масив в переменную */
@@ -51,8 +62,10 @@ var sortPlayersTimes = function (playersNames, times) {
 
   /* Сортирует отфильтрованный массив */
   sortAscending(playersTimes);
+  /* Создает словать из времени прохождения игроков */
+  var playersTimesMap = createPlayersTimesMap(playersTimes);
 
-  return playersTimes;
+  return playersTimesMap;
 };
 
 /* Возвращает массив игроков (за исключеним игрока с определенным именем) */
@@ -94,7 +107,7 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillStyle = TEXT_COLOR;
   ctx.font = TEXT_SIZE.toString() + 'px' + ' ' + TEXT_FONT_FAMILY;
 
-  if (times) {
+  if (!times) {
     ctx.fillStyle = TEXT_ERROR_COLOR;
     ctx.fillText('Ура, поздравляем!', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2);
     ctx.fillText('Вы успешно закончили игру.', CLOUD_POSITION_X + GAP + OFFSET, CLOUD_HEIGHT / 2 + TEXT_HEIGHT);
@@ -122,7 +135,7 @@ window.renderStatistics = function (ctx, names, times) {
 
       ctx.fillStyle = (names[i] === 'Вы')
         ? CURRENT_PLAYER_BAR_COLOR
-        : 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * sortedTimes.indexOf(times[i])).toFixed(2) + ')';
+        : 'rgba(0, 0, 255,' + (1 - transparencyCoefficient * sortedTimes[times[i]]).toFixed(2) + ')';
 
       var currentBarHeight = MAX_BAR_HEIGHT * times[i] / maxTime;
 
